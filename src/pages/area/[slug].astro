@@ -1,0 +1,158 @@
+---
+import '../../styles/global.css';
+import { areas } from '../../data/areas';
+
+export function getStaticPaths() {
+  return areas.map((area) => ({
+    params: { slug: area.slug },
+    props: { area }
+  }));
+}
+
+const { area } = Astro.props;
+
+const business = {
+  name: '訪問美容 SAMPLE',
+  phone: '000-0000-0000',
+  email: 'example@example.com'
+};
+
+const title = `${area.name}の訪問美容・自宅訪問カット | ${business.name}`;
+const description = `${area.name}で美容院への来店が難しい方へ。ご自宅で受けられる完全予約制の訪問美容。カット・カラー等をご相談いただけます。`;
+
+const baseUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://example.github.io';
+const canonicalUrl = new URL(Astro.url.pathname, baseUrl).toString();
+
+const faqs = [
+  {
+    q: `${area.name}ではどこまで訪問できますか？`,
+    a: `${area.name}内を中心に、訪問先・駐車環境・予約状況・移動時間を確認して対応可否をご案内します。`
+  },
+  {
+    q: `${area.name}で家族から予約できますか？`,
+    a: 'はい。ご本人だけでなく、ご家族や介護関係者からのご相談・ご予約にも対応します。'
+  },
+  {
+    q: `${area.name}で訪問カラーもできますか？`,
+    a: '体調とご自宅の環境を事前に確認し、安全に施術できる場合に対応します。'
+  }
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Service',
+      name: `${area.name}の訪問美容`,
+      serviceType: '訪問美容',
+      description,
+      areaServed: {
+        '@type': 'AdministrativeArea',
+        name: `${area.prefecture}${area.name}`
+      },
+      provider: {
+        '@type': ['HealthAndBeautyBusiness', 'LocalBusiness'],
+        name: business.name,
+        telephone: business.phone,
+        email: business.email
+      }
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((item) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a }
+      }))
+    }
+  ]
+};
+---
+
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalUrl} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalUrl} />
+  <title>{title}</title>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../../"><span class="brand-mark">H</span><span>{business.name}</span></a>
+    <nav class="global-nav area-nav">
+      <a href="../">対応地域</a>
+      <a class="nav-contact" href="../../#contact">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="area-hero">
+    <div class="container narrow">
+      <p class="eyebrow">AREA</p>
+      <h1>{area.name}の訪問美容</h1>
+      <p class="area-lead">{area.lead}</p>
+      <div class="hero-actions">
+        <a class="button primary" href="../../#contact">相談する</a>
+        <a class="button secondary" href="../../#price">料金を見る</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tint">
+    <div class="container narrow">
+      <div class="section-heading">
+        <p class="eyebrow">SERVICE AREA</p>
+        <h2>{area.name}で訪問美容をご検討の方へ</h2>
+        <p>美容院への来店が難しい方を対象に、ご自宅でカット・カラー等の施術をご相談いただけます。</p>
+      </div>
+
+      <div class="answer-card">
+        <h3>対応エリアの目安</h3>
+        <p>{area.neighborhoods.join('、')} など。訪問先・駐車環境・移動時間を確認して対応可否をご案内します。</p>
+      </div>
+
+      <div class="answer-card">
+        <h3>訪問対象について</h3>
+        <p>訪問美容は、美容所への来店が困難な方など、法令上の対象となる場合に提供します。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container narrow">
+      <div class="section-heading">
+        <p class="eyebrow">FAQ</p>
+        <h2>{area.name}の訪問美容でよくある質問</h2>
+      </div>
+      <div class="faq-list">
+        {faqs.map((item) => (
+          <details><summary>{item.q}</summary><p>{item.a}</p></details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-section">
+    <div class="container narrow">
+      <p class="eyebrow">CONTACT</p>
+      <h2>{area.name}への訪問可否を確認します。</h2>
+      <p>地域、現在の状況、希望メニューをお知らせください。</p>
+      <div class="hero-actions">
+        <a class="button secondary" href={`tel:${business.phone.replaceAll('-', '')}`}>{business.phone}</a>
+        <a class="button secondary" href={`mailto:${business.email}`}>メールで相談</a>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
