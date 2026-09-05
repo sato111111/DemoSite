@@ -1,13 +1,14 @@
 import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
 
 const repository = process.env.GITHUB_REPOSITORY;
+
 let site = 'https://example.github.io';
 let base = '/';
 
 if (repository) {
   const [owner, repo] = repository.split('/');
   site = `https://${owner}.github.io`;
+
   if (repo !== `${owner}.github.io`) {
     base = `/${repo}`;
   }
@@ -16,6 +17,5 @@ if (repository) {
 export default defineConfig({
   site,
   base,
-  output: 'static',
-  integrations: [sitemap()]
+  output: 'static'
 });
