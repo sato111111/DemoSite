@@ -1,45 +1,23 @@
 ---
 import '../../styles/global.css';
-import { areas } from '../../data/areas';
-
-const business = { name: '訪問美容 SAMPLE' };
-const baseUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://example.github.io';
-const canonicalUrl = new URL(Astro.url.pathname, baseUrl).toString();
 ---
 <!doctype html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width" />
-  <meta name="description" content="訪問美容 SAMPLEの対応地域一覧。" />
-  <link rel="canonical" href={canonicalUrl} />
-  <title>対応地域 | {business.name}</title>
+  <meta name="description" content="世田谷区を中心とした訪問美容の対応地域。" />
+  <title>対応地域 | 訪問美容 SAMPLE</title>
 </head>
 <body>
-<header class="site-header">
-  <div class="container header-inner">
-    <a class="brand" href="../"><span class="brand-mark">H</span><span>{business.name}</span></a>
-  </div>
-</header>
 <main>
   <section class="area-hero">
-    <div class="container">
+    <div class="container narrow">
       <p class="eyebrow">AREA</p>
       <h1>対応地域</h1>
-      <p class="area-lead">地域ごとの訪問美容情報をご確認いただけます。</p>
-    </div>
-  </section>
-  <section class="section section-tint">
-    <div class="container">
+      <p class="area-lead">世田谷区を中心に対応しています。</p>
       <div class="area-grid">
-        {areas.map((area) => (
-          <a class="area-card" href={`./${area.slug}/`}>
-            <span>{area.prefecture}</span>
-            <h2>{area.name}</h2>
-            <p>{area.lead}</p>
-            <strong>詳しく見る →</strong>
-          </a>
-        ))}
+        <a class="area-card" href="./setagaya/"><span>東京都</span><h2>世田谷区</h2><p>成城・用賀・二子玉川・等々力などを中心に訪問します。</p><strong>詳しく見る →</strong></a>
       </div>
     </div>
   </section>

@@ -3,39 +3,20 @@ import '../../styles/global.css';
 import { areas } from '../../data/areas';
 
 export function getStaticPaths() {
-  return areas.map((area) => ({
-    params: { slug: area.slug },
-    props: { area }
-  }));
+  return areas.map((area) => ({ params: { slug: area.slug }, props: { area } }));
 }
 
 const { area } = Astro.props;
-
-const business = {
-  name: '訪問美容 SAMPLE',
-  phone: '000-0000-0000',
-  email: 'example@example.com'
-};
-
-const title = `${area.name}の訪問美容・自宅訪問カット | ${business.name}`;
-const description = `${area.name}で美容院への来店が難しい方へ。ご自宅で受けられる完全予約制の訪問美容。カット・カラー等をご相談いただけます。`;
-
+const business = { name: '訪問美容 SAMPLE', phone: '000-0000-0000', email: 'example@example.com' };
+const title = `世田谷区の訪問美容・自宅訪問カット | ${business.name}`;
+const description = '世田谷区で美容院への来店が難しい方へ。成城・用賀・二子玉川・等々力などを中心に、ご自宅で受けられる訪問美容をご案内します。';
 const baseUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://example.github.io';
 const canonicalUrl = new URL(Astro.url.pathname, baseUrl).toString();
 
 const faqs = [
-  {
-    q: `${area.name}ではどこまで訪問できますか？`,
-    a: `${area.name}内を中心に、訪問先・駐車環境・予約状況・移動時間を確認して対応可否をご案内します。`
-  },
-  {
-    q: `${area.name}で家族から予約できますか？`,
-    a: 'はい。ご本人だけでなく、ご家族や介護関係者からのご相談・ご予約にも対応します。'
-  },
-  {
-    q: `${area.name}で訪問カラーもできますか？`,
-    a: '体調とご自宅の環境を事前に確認し、安全に施術できる場合に対応します。'
-  }
+  { q: '世田谷区ではどこまで訪問できますか？', a: `主に${area.neighborhoods.join('、')}などを中心に対応します。その他の世田谷区内もご相談ください。` },
+  { q: '世田谷区外でも来てもらえますか？', a: '移動時間と予約状況により個別にご案内します。' },
+  { q: '家族から予約できますか？', a: 'はい。ご本人だけでなく、ご家族や介護関係者からのご相談にも対応します。' }
 ];
 
 const jsonLd = {
@@ -43,19 +24,11 @@ const jsonLd = {
   '@graph': [
     {
       '@type': 'Service',
-      name: `${area.name}の訪問美容`,
+      name: '世田谷区の訪問美容',
       serviceType: '訪問美容',
       description,
-      areaServed: {
-        '@type': 'AdministrativeArea',
-        name: `${area.prefecture}${area.name}`
-      },
-      provider: {
-        '@type': ['HealthAndBeautyBusiness', 'LocalBusiness'],
-        name: business.name,
-        telephone: business.phone,
-        email: business.email
-      }
+      areaServed: { '@type': 'AdministrativeArea', name: '東京都世田谷区' },
+      provider: { '@type': ['HealthAndBeautyBusiness','LocalBusiness'], name: business.name, telephone: business.phone, email: business.email }
     },
     {
       '@type': 'FAQPage',
@@ -68,7 +41,6 @@ const jsonLd = {
   ]
 };
 ---
-
 <!doctype html>
 <html lang="ja">
 <head>
@@ -88,69 +60,30 @@ const jsonLd = {
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="../../"><span class="brand-mark">H</span><span>{business.name}</span></a>
-    <nav class="global-nav area-nav">
-      <a href="../">対応地域</a>
-      <a class="nav-contact" href="../../#contact">お問い合わせ</a>
-    </nav>
+    <nav class="global-nav area-nav"><a href="../../">トップ</a><a class="nav-contact" href="../../#contact">お問い合わせ</a></nav>
   </div>
 </header>
-
 <main>
   <section class="area-hero">
     <div class="container narrow">
-      <p class="eyebrow">AREA</p>
-      <h1>{area.name}の訪問美容</h1>
+      <p class="eyebrow">SETAGAYA AREA</p>
+      <h1>世田谷区の訪問美容</h1>
       <p class="area-lead">{area.lead}</p>
-      <div class="hero-actions">
-        <a class="button primary" href="../../#contact">相談する</a>
-        <a class="button secondary" href="../../#price">料金を見る</a>
-      </div>
+      <div class="hero-actions"><a class="button primary" href="../../#contact">訪問を相談する</a><a class="button secondary" href="../../#price">料金を見る</a></div>
     </div>
   </section>
-
   <section class="section section-tint">
     <div class="container narrow">
-      <div class="section-heading">
-        <p class="eyebrow">SERVICE AREA</p>
-        <h2>{area.name}で訪問美容をご検討の方へ</h2>
-        <p>美容院への来店が難しい方を対象に、ご自宅でカット・カラー等の施術をご相談いただけます。</p>
-      </div>
-
-      <div class="answer-card">
-        <h3>対応エリアの目安</h3>
-        <p>{area.neighborhoods.join('、')} など。訪問先・駐車環境・移動時間を確認して対応可否をご案内します。</p>
-      </div>
-
-      <div class="answer-card">
-        <h3>訪問対象について</h3>
-        <p>訪問美容は、美容所への来店が困難な方など、法令上の対象となる場合に提供します。</p>
-      </div>
+      <div class="section-heading"><p class="eyebrow">PRIORITY AREA</p><h2>重点対応地域</h2><p>{area.priorityAreas.join('、')}周辺を重点的に訪問します。</p></div>
+      <div class="area-tags">{area.neighborhoods.map((name) => <span>{name}</span>)}</div>
+      <div class="answer-card"><h3>出張料金について</h3><p>{area.surcharge}</p></div>
+      <div class="answer-card"><h3>世田谷区内のその他地域</h3><p>住所、移動時間、駐車環境、予約状況を確認したうえで対応可否をご案内します。</p></div>
     </div>
   </section>
-
   <section class="section">
     <div class="container narrow">
-      <div class="section-heading">
-        <p class="eyebrow">FAQ</p>
-        <h2>{area.name}の訪問美容でよくある質問</h2>
-      </div>
-      <div class="faq-list">
-        {faqs.map((item) => (
-          <details><summary>{item.q}</summary><p>{item.a}</p></details>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="contact-section">
-    <div class="container narrow">
-      <p class="eyebrow">CONTACT</p>
-      <h2>{area.name}への訪問可否を確認します。</h2>
-      <p>地域、現在の状況、希望メニューをお知らせください。</p>
-      <div class="hero-actions">
-        <a class="button secondary" href={`tel:${business.phone.replaceAll('-', '')}`}>{business.phone}</a>
-        <a class="button secondary" href={`mailto:${business.email}`}>メールで相談</a>
-      </div>
+      <div class="section-heading"><p class="eyebrow">FAQ</p><h2>世田谷区でよくあるご質問</h2></div>
+      <div class="faq-list">{faqs.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div>
     </div>
   </section>
 </main>

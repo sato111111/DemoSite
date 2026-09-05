@@ -1,19 +1,19 @@
 ---
 import '../styles/global.css';
-import { areas } from '../data/areas';
 
 const business = {
   name: '訪問美容 SAMPLE',
   shortName: '訪問美容 SAMPLE',
   tagline: '美容院へ行くことが難しくなっても、髪を諦めない。',
-  description: '美容院への来店が難しい方のための完全予約制の訪問美容サービス。ご自宅でカット・カラー等に対応します。',
-  area: '東京都内・近郊（一部地域）',
-  city: '東京都',
+  description: '世田谷区を中心に、美容院への来店が難しい方のご自宅へ美容師が訪問する完全予約制の訪問美容サービスです。',
+  area: '世田谷区を中心に対応',
   phone: '000-0000-0000',
   email: 'example@example.com',
   priceRange: '¥¥',
   openingHours: '完全予約制',
 };
+
+const priorityAreas = ['成城','砧','祖師谷','上用賀','用賀','瀬田','玉川','二子玉川','等々力','尾山台','奥沢'];
 
 const menus = [
   { name: '訪問カット', price: '¥8,800〜', note: 'カウンセリング・ブロー込み' },
@@ -22,12 +22,11 @@ const menus = [
 ];
 
 const faqs = [
+  { q: '世田谷区のどの地域に訪問できますか？', a: '成城、砧、祖師谷、上用賀、用賀、瀬田、玉川、二子玉川、等々力、尾山台、奥沢などを中心に対応します。世田谷区内のその他地域もご相談ください。' },
   { q: '訪問美容は誰でも自宅で利用できますか？', a: 'いいえ。訪問美容は、美容所への来店が困難な方など、法令上の対象となる場合に利用できます。疾病、障害、要介護状態などがある方を中心に、ご予約前に状況を確認します。' },
   { q: '家族から予約や相談はできますか？', a: 'はい。ご本人だけでなく、ご家族、介護関係者からのご相談やご予約にも対応します。' },
-  { q: '訪問美容でカラーもできますか？', a: '可能です。体調、ご自宅の環境、施術内容を事前に確認し、安全に施術できる場合に対応します。' },
-  { q: '駐車場がない場合でも利用できますか？', a: 'はい。近隣の時間貸し駐車場を利用します。駐車料金が発生する場合は事前にご案内します。' },
-  { q: '対応地域はどこですか？', a: `${business.area}です。移動時間や予約状況により対応可否を確認します。` },
-  { q: '料金はいくらですか？', a: '訪問カットは8,800円から、カット＋カラーは18,700円からを目安としています。出張料、駐車料金、長距離移動費等が別途必要になる場合があります。' }
+  { q: 'カラーも自宅でできますか？', a: '体調、ご自宅の環境、施術内容を事前に確認し、安全に施術できる場合に対応します。' },
+  { q: '駐車場がない場合でも利用できますか？', a: 'はい。近隣の時間貸し駐車場を利用します。駐車料金が発生する場合は事前にご案内します。' }
 ];
 
 const baseUrl = Astro.site?.toString().replace(/\/$/, '') ?? 'https://example.github.io';
@@ -37,7 +36,7 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': ['HealthAndBeautyBusiness', 'LocalBusiness'],
+      '@type': ['HealthAndBeautyBusiness','LocalBusiness'],
       '@id': `${canonicalUrl}#business`,
       name: business.name,
       description: business.description,
@@ -45,73 +44,51 @@ const jsonLd = {
       telephone: business.phone,
       email: business.email,
       priceRange: business.priceRange,
-      areaServed: { '@type': 'AdministrativeArea', name: business.area },
-      knowsAbout: ['訪問美容','自宅訪問カット','訪問カラー','プライベート美容サービス']
+      areaServed: { '@type': 'AdministrativeArea', name: '東京都世田谷区' },
+      knowsAbout: ['訪問美容','高齢者向け美容','世田谷区 訪問美容','自宅訪問カット','訪問カラー']
     },
     {
       '@type': 'Service',
       '@id': `${canonicalUrl}#service`,
-      name: '訪問美容サービス',
+      name: '世田谷区の訪問美容サービス',
       serviceType: '訪問美容',
       provider: { '@id': `${canonicalUrl}#business` },
-      areaServed: business.area,
-      audience: { '@type': 'PeopleAudience', audienceType: '美容所への来店が困難な方とそのご家族' },
-      offers: menus.map((item) => ({
-        '@type': 'Offer',
-        name: item.name,
-        priceSpecification: { '@type': 'PriceSpecification', description: item.price }
-      }))
+      areaServed: { '@type': 'AdministrativeArea', name: '東京都世田谷区' }
     },
     {
       '@type': 'FAQPage',
-      '@id': `${canonicalUrl}#faq`,
       mainEntity: faqs.map((item) => ({
         '@type': 'Question',
         name: item.q,
         acceptedAnswer: { '@type': 'Answer', text: item.a }
       }))
-    },
-    {
-      '@type': 'WebSite',
-      '@id': `${baseUrl}/#website`,
-      url: baseUrl,
-      name: business.name,
-      inLanguage: 'ja-JP'
     }
   ]
 };
 ---
-
 <!doctype html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width" />
   <meta name="description" content={business.description} />
-  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1" />
-  <meta name="theme-color" content="#f4f0e9" />
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
   <link rel="canonical" href={canonicalUrl} />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="ja_JP" />
-  <meta property="og:title" content={`${business.name} | 訪問美容`} />
+  <meta property="og:title" content={`${business.name} | 世田谷区の訪問美容`} />
   <meta property="og:description" content={business.description} />
   <meta property="og:url" content={canonicalUrl} />
-  <meta property="og:site_name" content={business.name} />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={`${business.name} | 訪問美容`} />
-  <meta name="twitter:description" content={business.description} />
-  <title>{business.name} | 訪問美容・自宅訪問カット</title>
+  <title>{business.name} | 世田谷区の訪問美容・自宅訪問カット</title>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 </head>
 <body>
 <header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="#top"><span class="brand-mark">H</span><span>{business.name}</span></a>
-    <button class="menu-button" type="button" aria-expanded="false" aria-controls="global-nav">
-      <span></span><span></span><span></span><span class="sr-only">メニュー</span>
-    </button>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="global-nav"><span></span><span></span><span></span><span class="sr-only">メニュー</span></button>
     <nav id="global-nav" class="global-nav">
-      <a href="#service">サービス</a><a href="#target">対象者</a><a href="#price">料金</a><a href="#area">対応地域</a><a href="#flow">流れ</a><a href="#faq">FAQ</a><a class="nav-contact" href="#contact">お問い合わせ</a>
+      <a href="#service">サービス</a><a href="#area">対応地域</a><a href="#price">料金</a><a href="#flow">流れ</a><a href="#faq">FAQ</a><a class="nav-contact" href="#contact">お問い合わせ</a>
     </nav>
   </div>
 </header>
@@ -120,63 +97,49 @@ const jsonLd = {
 <section class="hero">
   <div class="container hero-grid">
     <div class="hero-copy reveal">
-      <p class="eyebrow">PRIVATE HOME BEAUTY SERVICE</p>
+      <p class="eyebrow">SETAGAYA PRIVATE HOME BEAUTY</p>
       <h1>{business.tagline}</h1>
-      <p class="hero-lead">美容師がご自宅へ伺い、カットやカラーを一対一で承ります。外出や長時間の移動が難しくなった方へ、いつもの美容室のような時間を。</p>
+      <p class="hero-lead">世田谷区を中心に、美容所への移動が難しい方のご自宅へ美容師が訪問します。ご家族からのご相談も承ります。</p>
       <div class="hero-actions"><a class="button primary" href="#contact">訪問を相談する</a><a class="button secondary" href="#price">料金を見る</a></div>
-      <ul class="hero-points"><li>完全予約制</li><li>ご家族からの相談可</li><li>{business.area}</li></ul>
+      <ul class="hero-points"><li>世田谷区中心</li><li>完全予約制</li><li>ご家族からの相談可</li></ul>
     </div>
     <div class="hero-visual reveal" aria-hidden="true">
-      <div class="visual-card visual-main"><div class="visual-line"></div><p>Private beauty, at home.</p><strong>美しさを整える時間を、<br />ご自宅で。</strong></div>
-      <div class="visual-card visual-small"><span>01</span><p>One-to-one<br />Private care</p></div>
+      <div class="visual-card visual-main"><div class="visual-line"></div><p>Comfort at home.</p><strong>いつもの美容を、<br />ご自宅で。</strong></div>
+      <div class="visual-card visual-small"><span>01</span><p>Private<br />Home Beauty</p></div>
     </div>
   </div>
 </section>
 
-<section class="notice">
-  <div class="container notice-inner">
-    <strong>訪問美容とは</strong>
-    <p>美容院への来店が難しい方のために、美容師がご自宅へ伺い、カットやカラーを行うサービスです。ご予約前に対象条件と施術環境を丁寧に確認します。</p>
-  </div>
-</section>
+<section class="notice"><div class="container notice-inner"><strong>訪問美容とは</strong><p>美容所への来店が困難な方などを対象に、美容師がご自宅等へ訪問して施術を行うサービスです。ご予約前に対象条件と施術環境を確認します。</p></div></section>
 
 <section id="service" class="section">
   <div class="container">
-    <div class="section-heading reveal"><p class="eyebrow">SERVICE</p><h2>美容室の仕上がりを、<br />慣れ親しんだご自宅で。</h2><p>施術内容と環境を事前に確認し、その方に合った方法でご提案します。ご本人からはもちろん、ご家族からのご相談も承ります。</p></div>
+    <div class="section-heading reveal"><p class="eyebrow">SERVICE</p><h2>自宅で受けられる、上質な訪問美容。</h2><p>カットを中心に、ご自宅の環境と体調を確認したうえでカラー等にも対応します。</p></div>
     <div class="service-grid">
-      <article class="service-card reveal"><span class="number">01</span><h3>訪問カット</h3><p>カウンセリングからブローまで、ご希望を伺いながら整えます。</p></article>
-      <article class="service-card reveal"><span class="number">02</span><h3>カラー</h3><p>髪の状態とご自宅の環境を確認し、無理のない施術をご提案します。</p></article>
-      <article class="service-card reveal"><span class="number">03</span><h3>シャンプー等</h3><p>設備状況を事前に確認し、可能な範囲でシャンプーにも対応します。</p></article>
+      <article class="service-card reveal"><span class="number">01</span><h3>ご自宅へ訪問</h3><p>美容所への移動が難しい方のご自宅へ美容師が伺います。</p></article>
+      <article class="service-card reveal"><span class="number">02</span><h3>少人数・完全予約制</h3><p>一日の予約数を限定し、余裕を持ったスケジュールを組みます。</p></article>
+      <article class="service-card reveal"><span class="number">03</span><h3>カット以外も相談可能</h3><p>条件が整えばカラー等にも対応します。</p></article>
     </div>
   </div>
 </section>
 
-<section id="target" class="section section-tint">
-  <div class="container narrow">
-    <div class="section-heading reveal"><p class="eyebrow">FOR WHOM</p><h2>美容院へ行くことが<br />難しくなった方へ。</h2></div>
-    <div class="answer-card reveal"><h3>美容院へ行くことが難しい方</h3><p>疾病、障害、要介護状態などにより、美容所まで移動することが難しい方を中心に対応します。「対象になるかわからない」という場合も、まず状況をお知らせください。</p></div>
-    <div class="answer-card reveal"><h3>ご家族が送迎や付き添いに負担を感じている場合</h3><p>毎回の送迎や長時間の付き添いが難しい場合、ご家族からのご相談にも対応します。</p></div>
-    <div class="answer-card reveal"><h3>落ち着いた環境で美容を楽しみたい方</h3><p>完全予約制で、ご自宅の慣れ親しんだ空間にて、一対一の施術時間をご用意します。</p></div>
-  </div>
-</section>
-
-<section id="area" class="section">
+<section id="area" class="section section-tint">
   <div class="container">
-    <div class="section-heading reveal"><p class="eyebrow">SERVICE AREA</p><h2>現在の対応地域</h2><p>東京都内・近郊の一部地域へ伺います。地域ごとの詳細と目安をご確認ください。</p></div>
-    <div class="area-grid">
-      {areas.map((area) => <a class="area-card reveal" href={`./area/${area.slug}/`}><span>{area.prefecture}</span><h3>{area.name}</h3><p>{area.lead}</p><strong>地域の詳細を見る →</strong></a>)}
+    <div class="section-heading reveal"><p class="eyebrow">AREA</p><h2>世田谷区を中心に訪問します。</h2><p>成城・砧・祖師谷・上用賀・用賀・瀬田・玉川・二子玉川・等々力・尾山台・奥沢などを中心に対応します。</p></div>
+    <div class="area-focus reveal">
+      <div><span class="area-label">重点対応エリア</span><h3>成城・用賀・二子玉川・等々力周辺</h3><p>重点地域は移動効率を高めることで、できるだけ出張費を抑えた運用を想定しています。</p></div>
+      <a class="button secondary" href="./area/setagaya/">世田谷区の詳細を見る</a>
     </div>
-    <p class="section-link"><a href="./area/">対応地域一覧を見る →</a></p>
+    <div class="area-tags reveal">{priorityAreas.map((area) => <span>{area}</span>)}</div>
+    <p class="area-note reveal">世田谷区内のその他地域もご相談ください。区外は移動時間・予約状況により個別にご案内します。</p>
   </div>
 </section>
 
 <section id="price" class="section">
   <div class="container">
-    <div class="section-heading reveal"><p class="eyebrow">PRICE</p><h2>訪問美容の料金</h2><p>下記はサンプル料金です。</p></div>
-    <div class="price-list reveal">
-      {menus.map((item) => <div class="price-row"><div><h3>{item.name}</h3><p>{item.note}</p></div><strong>{item.price}</strong></div>)}
-    </div>
-    <p class="price-note reveal">※ 出張料・駐車料金・長距離移動費等が別途必要になる場合があります。</p>
+    <div class="section-heading reveal"><p class="eyebrow">PRICE</p><h2>料金の目安</h2><p>下記はサンプルです。実際の原価と移動時間を確認して最終決定してください。</p></div>
+    <div class="price-list reveal">{menus.map((item) => <div class="price-row"><div><h3>{item.name}</h3><p>{item.note}</p></div><strong>{item.price}</strong></div>)}</div>
+    <p class="price-note reveal">※ 駐車料金、世田谷区外への移動費等が別途必要になる場合があります。すべて事前にご案内します。</p>
   </div>
 </section>
 
@@ -184,30 +147,27 @@ const jsonLd = {
   <div class="container">
     <div class="section-heading reveal"><p class="eyebrow">FLOW</p><h2>ご利用の流れ</h2></div>
     <ol class="flow-list">
-      <li class="reveal"><span>1</span><div><h3>お問い合わせ</h3><p>状況、地域、希望メニューをお知らせください。</p></div></li>
-      <li class="reveal"><span>2</span><div><h3>事前確認</h3><p>対象条件、体調、施術環境、駐車場所、料金を確認します。</p></div></li>
+      <li class="reveal"><span>1</span><div><h3>お問い合わせ</h3><p>地域、現在の状況、希望メニューをお知らせください。</p></div></li>
+      <li class="reveal"><span>2</span><div><h3>事前確認</h3><p>訪問対象、体調、施術環境、駐車場所、料金を確認します。</p></div></li>
       <li class="reveal"><span>3</span><div><h3>ご訪問・施術</h3><p>必要な道具を持参し、ご自宅で施術します。</p></div></li>
-      <li class="reveal"><span>4</span><div><h3>次回のご相談</h3><p>必要な場合だけ次回時期をご案内します。</p></div></li>
+      <li class="reveal"><span>4</span><div><h3>次回のご相談</h3><p>必要な場合のみ、次回時期をご案内します。</p></div></li>
     </ol>
   </div>
 </section>
 
 <section id="faq" class="section">
   <div class="container narrow">
-    <div class="section-heading reveal"><p class="eyebrow">FAQ</p><h2>訪問美容についてよくある質問</h2></div>
-    <div class="faq-list reveal">
-      {faqs.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}
-    </div>
+    <div class="section-heading reveal"><p class="eyebrow">FAQ</p><h2>世田谷区の訪問美容でよくある質問</h2></div>
+    <div class="faq-list reveal">{faqs.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div>
   </div>
 </section>
 
 <section id="contact" class="contact-section">
   <div class="container contact-grid">
-    <div class="reveal"><p class="eyebrow">CONTACT</p><h2>まずは状況をお聞かせください。</h2><p>「訪問美容の対象になるかわからない」という段階でも構いません。</p></div>
+    <div class="reveal"><p class="eyebrow">CONTACT</p><h2>まずは訪問できるか確認します。</h2><p>「対象になるかわからない」という段階でも構いません。地域とご本人の状況をお知らせください。</p></div>
     <div class="contact-card reveal">
       <a class="contact-method" href={`tel:${business.phone.replaceAll('-', '')}`}><span>電話</span><strong>{business.phone}</strong></a>
       <a class="contact-method" href={`mailto:${business.email}`}><span>メール</span><strong>{business.email}</strong></a>
-      <div class="contact-method contact-disabled"><span>LINE</span><strong>相談窓口を準備中</strong></div>
       <p class="contact-small">{business.openingHours}。受付時間や休業日はここに記載してください。</p>
     </div>
   </div>
