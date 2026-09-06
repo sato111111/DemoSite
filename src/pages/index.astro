@@ -16,7 +16,8 @@ const business = {
 const priorityAreas = ['成城','砧','祖師谷','上用賀','用賀','瀬田','玉川','二子玉川','等々力','尾山台','奥沢'];
 
 const menus = [
-  { name: '訪問カット', price: '¥8,800〜', note: 'カウンセリング・ブロー込み' },
+  { name: '訪問カット', price: '¥8,800〜', note: 'カウンセリング込み' },
+  { name: 'ブロー', price: '+ ¥2,200〜', note: '仕上げ・スタイリング料金' },
   { name: 'カット＋カラー', price: '¥18,700〜', note: '薬剤・髪の長さにより変動' },
   { name: 'シャンプー対応', price: '+ ¥3,300〜', note: 'ご自宅の設備状況を事前確認します' },
 ];
@@ -139,7 +140,7 @@ const jsonLd = {
   <div class="container">
     <div class="section-heading reveal"><p class="eyebrow">PRICE</p><h2>料金の目安</h2><p>下記はサンプルです。実際の原価と移動時間を確認して最終決定してください。</p></div>
     <div class="price-list reveal">{menus.map((item) => <div class="price-row"><div><h3>{item.name}</h3><p>{item.note}</p></div><strong>{item.price}</strong></div>)}</div>
-    <p class="price-note reveal">※ 駐車料金、世田谷区外への移動費等が別途必要になる場合があります。すべて事前にご案内します。</p>
+    <p class="price-note reveal">※ ブローは別料金です。駐車料金、世田谷区外への移動費等が別途必要になる場合があります。すべて事前にご案内します。</p>
   </div>
 </section>
 
